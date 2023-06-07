@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Car Tracking</string>
+    <string name="error_unknown">Oops! Có lỗi xảy ra, vui lòng thử lại!</string>
+    <string name="error_couldnt_reach_server">Oops! Không thể kết nối tới server. Vui lòng kiểm tra lại kết nối mạng!</string>
+    <string name="oops_something_went_wrong">Oops! Something went wrong. Please try again.</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="hide_password">Ẩn</string>
+    <string name="show_password">Hiển thị</string>
+    <string name="sign_in">Đăng nhập</string>
+    <string name="icon">Icon</string>
+</resources>
