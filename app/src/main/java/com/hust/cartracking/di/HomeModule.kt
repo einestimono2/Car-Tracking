@@ -9,6 +9,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import timber.log.Timber
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -31,6 +32,7 @@ object HomeModule {
 	): OkHttpClient {
 		return okHttpClientBuilder
 			.addInterceptor {
+				Timber.v("Thêm header với HomeModule")
 				val accessToken = appCacheManager.readValue(Constants.ACCESS_TOKEN_KEY)
 				val modifiedRequest = it.request().newBuilder()
 					.addHeader("Cookie", "x-access-token=$accessToken")

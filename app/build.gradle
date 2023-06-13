@@ -3,11 +3,24 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
+    def properties = new Properties()
+    properties.load(new FileInputStream(rootProject.file("local.properties")))
+
     namespace 'com.hust.cartracking'
     compileSdk 33
+
+    signingConfigs {
+        release {
+            storeFile file('E:\\Android\\Android Studio\\jbr\\daemon\\8.0\\release-key.jks')
+            storePassword '2282001'
+            keyAlias 'tiiee'
+            keyPassword '2282001'
+        }
+    }
 
     defaultConfig {
         applicationId "com.hust.cartracking"
@@ -21,7 +34,7 @@ android {
             useSupportLibrary true
         }
 
-        signingConfig signingConfigs.debug // Config
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -29,9 +42,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "BASE_URL", "\"http://203.171.20.94:8903/\""
-            buildConfigField "String", "EMAIL", ""
-            buildConfigField "String", "PASSWORD", ""
+            buildConfigField "String", "BASE_URL", properties.getProperty("BASE_URL")
+            buildConfigField "String", "EMAIL", "\"\""
+            buildConfigField "String", "PASSWORD", "\"\""
         }
 
         // Config
@@ -40,9 +53,19 @@ android {
             debuggable = true
             minifyEnabled false
 
-            buildConfigField "String", "BASE_URL", "\"http://203.171.20.94:8903/\""
-            buildConfigField "String", "EMAIL", "\"demo@gmail.com\""
-            buildConfigField "String", "PASSWORD", "\"Navistar@123\""
+            buildConfigField "String", "BASE_URL", properties.getProperty("BASE_URL")
+            buildConfigField "String", "EMAIL", properties.getProperty("EMAIL_DEV")
+            buildConfigField "String", "PASSWORD", properties.getProperty("PASSWORD_DEV")
+            signingConfig signingConfigs.release
+        }
+
+        // Config
+        debug {
+            applicationIdSuffix ".debug"
+
+            buildConfigField "String", "BASE_URL", properties.getProperty("BASE_URL")
+            buildConfigField "String", "EMAIL", properties.getProperty("EMAIL_DEV")
+            buildConfigField "String", "PASSWORD", properties.getProperty("PASSWORD_DEV")
         }
     }
     compileOptions {
@@ -69,13 +92,14 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -88,11 +112,11 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
 
     // Icon
-    implementation 'androidx.compose.material:material-icons-core:1.5.0-alpha04'
-    implementation 'androidx.compose.material:material-icons-extended:1.5.0-alpha04'
+    implementation 'androidx.compose.material:material-icons-core:1.5.0-beta01'
+    implementation 'androidx.compose.material:material-icons-extended:1.5.0-beta01'
 
     // Navigation
-    implementation 'androidx.navigation:navigation-compose:2.6.0-rc01'
+    implementation 'androidx.navigation:navigation-compose:2.7.0-alpha01'
     implementation 'com.google.accompanist:accompanist-navigation-animation:0.31.2-alpha'
 
     // Timber - Better Logging
@@ -102,6 +126,8 @@ dependencies {
     implementation 'com.airbnb.android:lottie-compose:6.0.0'
 
     // Google Maps
+    implementation "com.google.maps.android:maps-compose:1.0.0"
+    implementation "com.google.android.gms:play-services-maps:18.1.0"
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

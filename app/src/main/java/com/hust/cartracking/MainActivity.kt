@@ -6,16 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.ImageLoader
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.hust.cartracking.core.components.AppBar
+import com.hust.cartracking.core.components.AppDrawer
 import com.hust.cartracking.core.ui.navigation.Navigation
 import com.hust.cartracking.core.ui.theme.CarTrackingTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,20 +38,38 @@ class MainActivity : ComponentActivity() {
 		setContent {
 			CarTrackingTheme() {
 				val snackbarHostState = remember { SnackbarHostState() }
+				val navController = rememberAnimatedNavController()
+				val drawerState = rememberDrawerState(DrawerValue.Closed)
+				val currentRoute =
+					navController.currentBackStackEntryAsState().value?.destination?.route
 				
-				Scaffold(
-					modifier = Modifier.fillMaxSize(),
-					snackbarHost = { SnackbarHost(snackbarHostState) },
+				AppDrawer(
+					navController = navController,
+					drawerState = drawerState,
+					currentRoute = currentRoute
 				) {
-					// A surface container using the 'background' color from the theme
-					Surface(
-						modifier = Modifier.padding(it),
-						color = MaterialTheme.colorScheme.background
+					Scaffold(
+						modifier = Modifier.fillMaxSize(),
+						snackbarHost = { SnackbarHost(snackbarHostState) },
+						topBar = {
+							AppBar(
+								navController = navController,
+								currentRoute = currentRoute,
+								drawerState = drawerState
+							)
+						}
 					) {
-						Navigation(
-							snackbarHostState = snackbarHostState,
-							imageLoader = imageLoader,
-						)
+						// A surface container using the 'background' color from the theme
+						Surface(
+							modifier = Modifier.padding(it),
+							color = MaterialTheme.colorScheme.background
+						) {
+							Navigation(
+								snackbarHostState = snackbarHostState,
+								imageLoader = imageLoader,
+								navController = navController,
+							)
+						}
 					}
 				}
 				
