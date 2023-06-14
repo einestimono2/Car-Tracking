@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
@@ -14,6 +15,8 @@ import androidx.navigation.NavHostController
 import coil.ImageLoader
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.hust.cartracking.core.components.AppBarState
+import com.hust.cartracking.core.util.Constants
 import com.hust.cartracking.features.auth.presentation.login.LoginScreen
 import com.hust.cartracking.features.auth.presentation.splash.SplashScreen
 import com.hust.cartracking.features.home.presentation.HomeScreen
@@ -21,13 +24,16 @@ import com.hust.cartracking.features.home.presentation.HomeScreen
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Navigation(
+	modifier: Modifier = Modifier,
 	snackbarHostState: SnackbarHostState,
-	imageLoader: ImageLoader,
 	navController: NavHostController,
+	appBar: (AppBarState) -> Unit,
+	imageLoader: ImageLoader,
 ) {
 	AnimatedNavHost(
+		modifier = modifier,
 		navController = navController,
-		startDestination = Screens.SplashScreen.route,
+		startDestination = Constants.START_DESTINATION,
 	) {
 		fadeTransitionComposable(route = Screens.SplashScreen.route) {
 			SplashScreen(navController = navController)
@@ -36,76 +42,76 @@ fun Navigation(
 			LoginScreen(navController = navController, snackbarHostState = snackbarHostState)
 		}
 		fadeTransitionComposable(route = Screens.HomeScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.HistoryByCarScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.HistoryByScheduleScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.AccountScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.PermissionScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.ScopeScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.ScopePermissionScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.ScopeDivisionScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.GroupManagementScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.UserUnitScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.PointScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.ScheduleSampleScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.ScheduleScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.RfidScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.DeviceScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.VehicleScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.VehicleMaintenanceScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.DriverScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.OwnerScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.AtmTechnicianScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.EscortScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.RecipientScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.SettingScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 		fadeTransitionComposable(route = Screens.PasswordScreen.route) {
-			HomeScreen(navController = navController)
+			HomeScreen(navController = navController, appBar = appBar)
 		}
 	}
 }

@@ -8,16 +8,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
-import com.hust.cartracking.core.ui.navigation.Screens
 import com.hust.cartracking.core.ui.navigation.pop
 import kotlinx.coroutines.launch
 
@@ -32,53 +29,42 @@ import kotlinx.coroutines.launch
 fun AppBar(
 	navController: NavHostController,
 	drawerState: DrawerState,
-	currentRoute: String?
+	appBarState: AppBarState,
 ) {
 	val scope = rememberCoroutineScope()
 	
-	if (showAppBar(currentRoute)) {
-		val showArrowBack = showArrowBack(currentRoute)
+	if (appBarState.showAppBar) {
 		
 		TopAppBar(
 			title = {
 				Text(
-					text = Screens.getScreenName(currentRoute),
+					text = appBarState.title,
 					style = MaterialTheme.typography.titleMedium,
 					maxLines = 1,
 					overflow = TextOverflow.Ellipsis,
 				)
 			},
+			
 			navigationIcon = {
 				IconButton(onClick = {
-					if (showArrowBack) {
-						navController.pop()
-					} else {
+					if (appBarState.isMenuNavigation) {
 						scope.launch { drawerState.open() }
+					} else {
+						navController.pop()
 					}
 				}) {
 					Icon(
-						imageVector = if (showArrowBack) Icons.Default.ArrowBack else Icons.Default.Menu,
+						imageVector = if (!appBarState.isMenuNavigation) Icons.Default.ArrowBack else Icons.Default.Menu,
 						contentDescription = "Menu"
 					)
 				}
 			},
+			
+			actions = {
+				appBarState.actions?.invoke(this)
+			},
+			
 			colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
 		)
-	}
-}
-
-fun showAppBar(route: String?): Boolean {
-	return when (route) {
-		Screens.SplashScreen.route -> false
-		Screens.LoginScreen.route -> false
-		else -> true
-	}
-}
-
-fun showArrowBack(route: String?): Boolean {
-	return when (route) {
-		Screens.SplashScreen.route -> false
-		Screens.LoginScreen.route -> false
-		else -> false
 	}
 }

@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,13 +52,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.hust.cartracking.R
-import com.hust.cartracking.core.ui.navigation.Screens
 import com.hust.cartracking.core.ui.navigation.go
 import com.hust.cartracking.core.util.MenuDrawerItem
 import com.hust.cartracking.core.util.extensions.widthRatio
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 /********************
  * @Author: Tiiee
@@ -65,28 +66,25 @@ import timber.log.Timber
  * @Time: 5:48 PM
  ********************/
 
-fun showDrawer(route: String?): Boolean {
-	return when (route) {
-		Screens.SplashScreen.route -> false // on this screen bottom bar should be hidden
-		Screens.LoginScreen.route -> false // here too
-		else -> true // in all other cases show bottom bar
-	}
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
 	navController: NavHostController,
 	drawerState: DrawerState,
-	currentRoute: String?,
 	content: @Composable () -> Unit,
 ) {
-	ModalNavigationDrawer(gesturesEnabled = showDrawer(currentRoute),
+	val currentRoute =
+		navController.currentBackStackEntryAsState().value?.destination?.route
+	
+	ModalNavigationDrawer(
+		gesturesEnabled = drawerState.isOpen,
 		content = content,
 		drawerState = drawerState,
 		drawerContent = {
 			ModalDrawerSheet(
-				modifier = Modifier.widthRatio(0.65f),
+				modifier = Modifier
+					.widthRatio(0.65f)
+					.padding(top = 64.dp), // Drawer nằm bên dưới Appbar (64.dp: height của TopAppBar)
 				drawerContainerColor = MaterialTheme.colorScheme.background,
 				drawerShape = RoundedCornerShape(bottomEnd = 16.dp, topEnd = 16.dp),
 			) {
@@ -99,7 +97,7 @@ fun AppDrawer(
 							.height(0.75.dp)
 							.background(Color.Gray),
 					)
-					DrawerContent(MenuDrawerItem.items, currentRoute, navController)
+					DrawerContent(MenuDrawerItem.items, currentRoute, navController, drawerState)
 				}
 			}
 		})
@@ -130,9 +128,13 @@ fun DrawerHeader() {
 	
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
-	items: List<MenuDrawerItem>, currentRoute: String?, navController: NavHostController
+	items: List<MenuDrawerItem>,
+	currentRoute: String?,
+	navController: NavHostController,
+	drawerState: DrawerState,
 ) {
 	LazyColumn(
 		modifier = Modifier
@@ -142,23 +144,31 @@ fun DrawerContent(
 		contentPadding = PaddingValues(horizontal = 8.dp),
 	) {
 		items(items) { item ->
-			DrawerItemWrapper(item, currentRoute, navController)
+			DrawerItemWrapper(item, currentRoute, navController, drawerState)
 		}
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerItemWrapper(
-	item: MenuDrawerItem, currentRoute: String?, navController: NavHostController
+	item: MenuDrawerItem,
+	currentRoute: String?,
+	navController: NavHostController,
+	drawerState: DrawerState,
 ) {
 	val hasChildren = item.children.isNotEmpty()
-	val initExpaned = item.children.any { it.route == currentRoute }
+	val initExpanded = item.children.any { it.route == currentRoute }
 	
-	var expanded by remember { mutableStateOf(initExpaned) }
+	var expanded by remember { mutableStateOf(initExpanded) }
+	val scope = rememberCoroutineScope()
 	
 	val onClick = {
 		if (hasChildren) expanded = !expanded
-		else if(item.route != currentRoute) navController.go(item.route)
+		else if (item.route != currentRoute) {
+			scope.launch { drawerState.close() }
+			navController.go(item.route)
+		}
 	}
 	
 	Card(
@@ -180,7 +190,7 @@ fun DrawerItemWrapper(
 					)
 				),
 		) {
-			DrawerItemParent(onClick, expanded, item, initExpaned || item.route == currentRoute)
+			DrawerItemParent(onClick, expanded, item, initExpanded || item.route == currentRoute)
 			
 			if (expanded && hasChildren) {
 				Box(
@@ -193,7 +203,10 @@ fun DrawerItemWrapper(
 				
 				item.children.forEach {
 					DrawerItemChild(it, it.route == currentRoute) {
-						if (it.route != currentRoute) navController.go(it.route)
+						if (it.route != currentRoute) {
+							scope.launch { drawerState.close() }
+							navController.go(it.route)
+						}
 					}
 				}
 			}
@@ -239,7 +252,7 @@ fun DrawerItemChild(item: MenuDrawerItem, isSelected: Boolean, onClick: () -> Un
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(22.dp, 6.dp, 6.dp, 3.dp)
-			.clickable { onClick( ) },
+			.clickable { onClick() },
 		verticalAlignment = Alignment.CenterVertically,
 	) {
 		Icon(
@@ -265,7 +278,7 @@ fun DrawerItemChild(item: MenuDrawerItem, isSelected: Boolean, onClick: () -> Un
 )
 @Composable
 fun AppDrawerPreview() {
-	AppDrawer(rememberAnimatedNavController(), rememberDrawerState(DrawerValue.Closed), null) {
+	AppDrawer(rememberAnimatedNavController(), rememberDrawerState(DrawerValue.Closed)) {
 		Column() {}
 	}
 }

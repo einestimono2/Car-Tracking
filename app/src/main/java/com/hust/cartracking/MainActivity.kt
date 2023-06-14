@@ -14,12 +14,15 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.ImageLoader
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.hust.cartracking.core.components.AppBar
+import com.hust.cartracking.core.components.AppBarState
 import com.hust.cartracking.core.components.AppDrawer
 import com.hust.cartracking.core.ui.navigation.Navigation
 import com.hust.cartracking.core.ui.theme.CarTrackingTheme
@@ -37,37 +40,39 @@ class MainActivity : ComponentActivity() {
 		
 		setContent {
 			CarTrackingTheme() {
-				val snackbarHostState = remember { SnackbarHostState() }
-				val navController = rememberAnimatedNavController()
-				val drawerState = rememberDrawerState(DrawerValue.Closed)
-				val currentRoute =
-					navController.currentBackStackEntryAsState().value?.destination?.route
-				
-				AppDrawer(
-					navController = navController,
-					drawerState = drawerState,
-					currentRoute = currentRoute
+				// A surface container using the 'background' color from the theme
+				Surface(
+					modifier = Modifier.fillMaxSize(),
+					color = MaterialTheme.colorScheme.background
 				) {
-					Scaffold(
-						modifier = Modifier.fillMaxSize(),
-						snackbarHost = { SnackbarHost(snackbarHostState) },
-						topBar = {
-							AppBar(
-								navController = navController,
-								currentRoute = currentRoute,
-								drawerState = drawerState
-							)
-						}
+					val navController = rememberAnimatedNavController()
+					
+					val snackbarHostState = remember { SnackbarHostState() }
+					
+					val drawerState = rememberDrawerState(DrawerValue.Closed)
+					var appBarState by remember { mutableStateOf(AppBarState()) }
+					
+					AppDrawer(
+						navController = navController,
+						drawerState = drawerState,
 					) {
-						// A surface container using the 'background' color from the theme
-						Surface(
-							modifier = Modifier.padding(it),
-							color = MaterialTheme.colorScheme.background
+						Scaffold(
+							modifier = Modifier.fillMaxSize(),
+							snackbarHost = { SnackbarHost(snackbarHostState) },
+							topBar = {
+								AppBar(
+									navController = navController,
+									drawerState = drawerState,
+									appBarState = appBarState,
+								)
+							}
 						) {
 							Navigation(
+								modifier = Modifier.padding(it),
 								snackbarHostState = snackbarHostState,
 								imageLoader = imageLoader,
 								navController = navController,
+								appBar = { appBar -> appBarState = appBar },
 							)
 						}
 					}
