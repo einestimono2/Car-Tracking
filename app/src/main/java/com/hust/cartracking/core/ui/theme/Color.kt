@@ -2,6 +2,16 @@ package com.hust.cartracking.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val header_bg = Color(0xFFE8E8E8)
+
+val car_running = Color(0xFF4A9A92)
+val car_sos = Color(0xFF6F001A)
+val car_stopping = Color(0xFFEA9800)
+val car_parking = Color(0xFFDA2128)
+
+val warning_level1 = Color(0xFFEA9800)
+val warning_level2 = Color(0xFFDA2128)
+
 //val md_theme_light_primary = Color(0xFFBF0031)
 //val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 //val md_theme_light_primaryContainer = Color(0xFFFFDAD9)

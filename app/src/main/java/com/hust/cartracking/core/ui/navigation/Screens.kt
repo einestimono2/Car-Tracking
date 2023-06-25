@@ -3,7 +3,10 @@ package com.hust.cartracking.core.ui.navigation
 sealed class Screens(val route: String) {
 	object SplashScreen : Screens("splash_screen")
 	object LoginScreen : Screens("login_screen")
+	
 	object HomeScreen : Screens("monitor_screen") // Giám sát
+	object MonitorSearchScreen : Screens("monitor_search_screen")
+	
 	
 	// Lịch sử
 	object HistoryByCarScreen : Screens("history_by_car_screen") // Lịch sử xe

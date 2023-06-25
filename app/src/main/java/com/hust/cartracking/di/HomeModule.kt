@@ -2,7 +2,16 @@ package com.hust.cartracking.di
 
 import com.hust.cartracking.core.data.local.AppCache
 import com.hust.cartracking.core.util.Constants
-import com.hust.cartracking.features.home.data.remote.HomeAPI
+import com.hust.cartracking.features.home.data.remote.MonitorAPI
+import com.hust.cartracking.features.home.data.repository.MonitorRepositoryImpl
+import com.hust.cartracking.features.home.domain.repository.MonitorRepository
+import com.hust.cartracking.features.home.domain.usecase.GetAllCarOnline
+import com.hust.cartracking.features.home.domain.usecase.GetAllWarning
+import com.hust.cartracking.features.home.domain.usecase.GetLstRunningSchedule
+import com.hust.cartracking.features.home.domain.usecase.GetLstUpcomingSchedule
+import com.hust.cartracking.features.home.domain.usecase.GetPointShortDataByGroup
+import com.hust.cartracking.features.home.domain.usecase.GetVehicleGroupByUser
+import com.hust.cartracking.features.home.domain.usecase.MonitorUC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,8 +34,8 @@ object HomeModule {
 	
 	@Provides
 	@Singleton
-	@Named("HomeOkHttpClient")
-	fun provideHomeOkHttpClient(
+	@Named("MonitorOkHttpClient")
+	fun provideMonitorOkHttpClient(
 		okHttpClientBuilder: OkHttpClient.Builder,
 		appCacheManager: AppCache,
 	): OkHttpClient {
@@ -35,7 +44,10 @@ object HomeModule {
 				Timber.v("Thêm header với HomeModule")
 				val accessToken = appCacheManager.readValue(Constants.ACCESS_TOKEN_KEY)
 				val modifiedRequest = it.request().newBuilder()
-					.addHeader("Cookie", "x-access-token=$accessToken")
+					.header(
+						"Cookie",
+						".AspNetCore.Antiforgery.dNc7gmZvK2I=${Constants.MONITOR_INDEX_VALUE};x-access-token=${Constants.ASSESS_TOKEN_VALUE}"
+					)
 					.build()
 				it.proceed(modifiedRequest)
 			}
@@ -44,13 +56,34 @@ object HomeModule {
 	
 	@Provides
 	@Singleton
-	fun provideHomeApi(
+	fun provideMonitorApi(
 		retrofitBuilder: Retrofit.Builder,
-		@Named("HomeOkHttpClient") client: OkHttpClient
-	): HomeAPI {
+		@Named("MonitorOkHttpClient") client: OkHttpClient
+	): MonitorAPI {
 		return retrofitBuilder
 			.client(client)
 			.build()
-			.create(HomeAPI::class.java)
+			.create(MonitorAPI::class.java)
+	}
+	
+	@Provides
+	@Singleton
+	fun provideMonitorRepository(
+		api: MonitorAPI,
+	): MonitorRepository {
+		return MonitorRepositoryImpl(api)
+	}
+	
+	@Provides
+	@Singleton
+	fun provideMonitorUC(repository: MonitorRepository): MonitorUC {
+		return MonitorUC(
+			getVehicleGroupByUser = GetVehicleGroupByUser(repository),
+			getAllCarOnline = GetAllCarOnline(repository),
+			getAllWarning = GetAllWarning(repository),
+			getLstRunningSchedule = GetLstRunningSchedule(repository),
+			getLstUpcomingSchedule = GetLstUpcomingSchedule(repository),
+			getPointShortDataByGroup = GetPointShortDataByGroup(repository),
+		)
 	}
 }

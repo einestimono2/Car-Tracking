@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
  ********************/
 
 data class AppBarState(
-	val showAppBar: Boolean = false,
-	val isMenuNavigation: Boolean = true,
 	val title: String = "",
 	val actions: (@Composable RowScope.() -> Unit)? = null
 )

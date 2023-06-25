@@ -31,9 +31,10 @@ fun AppBar(
 	drawerState: DrawerState,
 	appBarState: AppBarState,
 ) {
-	val scope = rememberCoroutineScope()
-	
-	if (appBarState.showAppBar) {
+	if (appBarState.title != "") {
+		val scope = rememberCoroutineScope()
+		val isBackNavigation =
+			navController.previousBackStackEntry?.destination?.route != null
 		
 		TopAppBar(
 			title = {
@@ -47,14 +48,14 @@ fun AppBar(
 			
 			navigationIcon = {
 				IconButton(onClick = {
-					if (appBarState.isMenuNavigation) {
+					if (!isBackNavigation) {
 						scope.launch { drawerState.open() }
 					} else {
 						navController.pop()
 					}
 				}) {
 					Icon(
-						imageVector = if (!appBarState.isMenuNavigation) Icons.Default.ArrowBack else Icons.Default.Menu,
+						imageVector = if (isBackNavigation) Icons.Default.ArrowBack else Icons.Default.Menu,
 						contentDescription = "Menu"
 					)
 				}

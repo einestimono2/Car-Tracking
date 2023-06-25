@@ -59,6 +59,7 @@ import com.hust.cartracking.core.ui.navigation.go
 import com.hust.cartracking.core.util.MenuDrawerItem
 import com.hust.cartracking.core.util.extensions.widthRatio
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /********************
  * @Author: Tiiee
