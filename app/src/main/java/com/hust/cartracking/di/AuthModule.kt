@@ -1,7 +1,6 @@
 package com.hust.cartracking.di
 
 import com.hust.cartracking.core.data.local.AppCache
-import com.hust.cartracking.core.util.Constants
 import com.hust.cartracking.features.auth.data.remote.AuthAPI
 import com.hust.cartracking.features.auth.data.repository.AuthRepositoryImpl
 import com.hust.cartracking.features.auth.domain.repository.AuthRepository
@@ -33,14 +32,7 @@ object AuthModule {
 	fun provideAuthOkHttpClient(
 		okHttpClientBuilder: OkHttpClient.Builder
 	): OkHttpClient {
-		return okHttpClientBuilder
-//			.addInterceptor {
-//				val modifiedRequest = it.request().newBuilder()
-//					.header("Content-Type", "application/json")
-//					.build()
-//				it.proceed(modifiedRequest)
-//			}
-			.build()
+		return okHttpClientBuilder.build()
 	}
 	
 	@Provides

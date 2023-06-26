@@ -3,6 +3,8 @@ package com.hust.cartracking.core.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.hust.cartracking.core.util.Constants
+import com.hust.cartracking.core.util.Constants.ACCESS_TOKEN_EXPIRED_KEY
+import com.hust.cartracking.core.util.Constants.MONITOR_INDEX_VALUE_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -32,4 +34,12 @@ class AppCacheManager @Inject constructor(
 		key: String,
 	): String? =
 		prefs.getString(key, null)
+	
+	override fun removeValue(key: String) = prefs.edit().remove(key).apply()
+	
+	override fun clearAll() = prefs.edit().clear().apply()
+	override fun clearAllIndex() {
+		removeValue(ACCESS_TOKEN_EXPIRED_KEY)
+		removeValue(MONITOR_INDEX_VALUE_KEY)
+	}
 }

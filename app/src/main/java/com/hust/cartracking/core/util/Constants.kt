@@ -36,25 +36,24 @@ import com.hust.cartracking.core.ui.navigation.Screens
 
 // Object class: Khởi tạo một lần để sử dụng cho cả chương trình <=> Singleton
 object Constants {
+	val START_DESTINATION = Screens.SplashScreen.route
+	
 	const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)\$"
 	
 	const val SHARED_PREF_NAME = "car_tracking_shared_pref"
 	
-	const val ACCESS_TOKEN_KEY = "access_token"
+	const val CAR_ONLINE_SEARCH_KEY = "lat_lng_car"
 	
-	const val CAR_ONLINE_SEARCH_KEY = "LAT_LNG"
+	const val VERIFICATION_TOKEN_TAG =
+		"<input name=\"__RequestVerificationToken\" type=\"hidden\" value=\""
 	
-	val START_DESTINATION = Screens.HomeScreen.route
+	const val ACCESS_TOKEN_VALUE_KEY = "access_token_value"
+	const val ACCESS_TOKEN_EXPIRED_KEY = "access_token_expired"
 	
-	// ----------------------------------------------------------------
-
+	const val MONITOR_INDEX_VALUE_KEY = "monitor_index_value"
+	
 	// x-access-token=
-	const val ASSESS_TOKEN_VALUE =
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxIiwic2NvcGVJZCI6IjEiLCJ1c2VyTmFtZSI6ImRlbW9AZ21haWwuY29tIiwibmJmIjoxNjg3NTk0Njk5LCJleHAiOjE2ODc2NDg2OTksImlhdCI6MTY4NzU5NDY5OX0.mJ8jCoMgK1YdHBg91CHQHnnofumET55Qpn9I9PSJB7I"
-	
 	// .AspNetCore.Antiforgery.dNc7gmZvK2I=
-	const val MONITOR_INDEX_VALUE =
-		"CfDJ8DK3sGQInfdBtBPy5xK5Zhq-IFgV2a4F-L7PEZsSIvlOreAnlL5qWvXUmLjLsibpANW3TeAN-EQJcfCtI20wSNAJqU0wnHw9OJn_OL9Z128WLg3M7FXTJTJiDg8BykBx4u9_NJ8VRxgw0J_qYNZZuF8"
 }
 
 data class MenuDrawerItem(
@@ -65,13 +64,28 @@ data class MenuDrawerItem(
 ) {
 	companion object {
 		val items = listOf(
-			MenuDrawerItem("Giám sát", Icons.Default.DirectionsCar, Screens.HomeScreen.route, emptyList()),
+			MenuDrawerItem(
+				"Giám sát",
+				Icons.Default.DirectionsCar,
+				Screens.HomeScreen.route,
+				emptyList()
+			),
 			
 			MenuDrawerItem(
 				"Lịch sử", Icons.Default.Timeline, Screens.EmptyScreen.route,
 				listOf(
-					MenuDrawerItem("Lịch sử xe", Icons.Default.CalendarMonth, Screens.HistoryByCarScreen.route, emptyList()),
-					MenuDrawerItem("Lịch sử tuyến", Icons.Default.EventAvailable, Screens.HistoryByScheduleScreen.route, emptyList())
+					MenuDrawerItem(
+						"Lịch sử xe",
+						Icons.Default.CalendarMonth,
+						Screens.HistoryByCarScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Lịch sử tuyến",
+						Icons.Default.EventAvailable,
+						Screens.HistoryByScheduleScreen.route,
+						emptyList()
+					)
 				)
 			),
 			
@@ -84,25 +98,60 @@ data class MenuDrawerItem(
 						Screens.GroupManagementScreen.route,
 						emptyList()
 					),
-					MenuDrawerItem("Phân công đơn vị", Icons.Default.LensBlur, Screens.UserUnitScreen.route, emptyList())
+					MenuDrawerItem(
+						"Phân công đơn vị",
+						Icons.Default.LensBlur,
+						Screens.UserUnitScreen.route,
+						emptyList()
+					)
 				)
 			),
 			
 			MenuDrawerItem(
 				"Vận hành tuyến", Icons.Default.Directions, Screens.EmptyScreen.route,
 				listOf(
-					MenuDrawerItem("Quản lý điểm giao dịch", Icons.Default.Place, Screens.PointScreen.route, emptyList()),
-					MenuDrawerItem("Quản lý tuyến mẫu", Icons.Default.Route, Screens.ScheduleSampleScreen.route, emptyList()),
-					MenuDrawerItem("Phân công tuyến", Icons.Default.Map, Screens.ScheduleScreen.route, emptyList())
+					MenuDrawerItem(
+						"Quản lý điểm giao dịch",
+						Icons.Default.Place,
+						Screens.PointScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Quản lý tuyến mẫu",
+						Icons.Default.Route,
+						Screens.ScheduleSampleScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Phân công tuyến",
+						Icons.Default.Map,
+						Screens.ScheduleScreen.route,
+						emptyList()
+					)
 				)
 			),
 			
 			MenuDrawerItem(
 				"Phương tiện/Thiết bị", Icons.Default.Commute, Screens.EmptyScreen.route,
 				listOf(
-					MenuDrawerItem("Thẻ RFID", Icons.Default.Style, Screens.RfidScreen.route, emptyList()),
-					MenuDrawerItem("Thiết bị lắp trên xe", Icons.Default.Memory, Screens.DeviceScreen.route, emptyList()),
-					MenuDrawerItem("Xe ô tô", Icons.Default.LocalShipping, Screens.VehicleScreen.route, emptyList()),
+					MenuDrawerItem(
+						"Thẻ RFID",
+						Icons.Default.Style,
+						Screens.RfidScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Thiết bị lắp trên xe",
+						Icons.Default.Memory,
+						Screens.DeviceScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Xe ô tô",
+						Icons.Default.LocalShipping,
+						Screens.VehicleScreen.route,
+						emptyList()
+					),
 					MenuDrawerItem(
 						"Bảo dưỡng/Bảo hiểm/Đăng kiểm/Thay dầu",
 						Icons.Default.CarRepair,
@@ -115,8 +164,18 @@ data class MenuDrawerItem(
 			MenuDrawerItem(
 				"Quản lý cán bộ", Icons.Default.People, Screens.EmptyScreen.route,
 				listOf(
-					MenuDrawerItem("Lái xe", Icons.Default.DirectionsBike, Screens.DriverScreen.route, emptyList()),
-					MenuDrawerItem("Chủ hàng/Thủ quỹ ATM", Icons.Default.Atm, Screens.OwnerScreen.route, emptyList()),
+					MenuDrawerItem(
+						"Lái xe",
+						Icons.Default.DirectionsBike,
+						Screens.DriverScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Chủ hàng/Thủ quỹ ATM",
+						Icons.Default.Atm,
+						Screens.OwnerScreen.route,
+						emptyList()
+					),
 					MenuDrawerItem(
 						"Kỹ thuật viên ATM",
 						Icons.Default.Person2,
@@ -141,10 +200,30 @@ data class MenuDrawerItem(
 			MenuDrawerItem(
 				"Quản lý tài khoản", Icons.Default.AdminPanelSettings, Screens.EmptyScreen.route,
 				listOf(
-					MenuDrawerItem("Tài khoản", Icons.Default.Person, Screens.AccountScreen.route, emptyList()),
-					MenuDrawerItem("Danh sách quyền", Icons.Default.Security, Screens.PermissionScreen.route, emptyList()),
-					MenuDrawerItem("Danh sách nhóm quyền", Icons.Default.Bookmark, Screens.ScopeScreen.route, emptyList()),
-					MenuDrawerItem("Quyền - Nhóm quyền", Icons.Default.Group, Screens.ScopePermissionScreen.route, emptyList()),
+					MenuDrawerItem(
+						"Tài khoản",
+						Icons.Default.Person,
+						Screens.AccountScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Danh sách quyền",
+						Icons.Default.Security,
+						Screens.PermissionScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Danh sách nhóm quyền",
+						Icons.Default.Bookmark,
+						Screens.ScopeScreen.route,
+						emptyList()
+					),
+					MenuDrawerItem(
+						"Quyền - Nhóm quyền",
+						Icons.Default.Group,
+						Screens.ScopePermissionScreen.route,
+						emptyList()
+					),
 					MenuDrawerItem(
 						"Phân quyền tài khoản",
 						Icons.Default.ManageAccounts,
@@ -154,9 +233,19 @@ data class MenuDrawerItem(
 				)
 			),
 			
-			MenuDrawerItem("Cài đặt", Icons.Default.Settings, Screens.SettingScreen.route, emptyList()),
+			MenuDrawerItem(
+				"Cài đặt",
+				Icons.Default.Settings,
+				Screens.SettingScreen.route,
+				emptyList()
+			),
 			
-			MenuDrawerItem("Đổi mật khẩu", Icons.Default.Key, Screens.PasswordScreen.route, emptyList()),
+			MenuDrawerItem(
+				"Đổi mật khẩu",
+				Icons.Default.Key,
+				Screens.PasswordScreen.route,
+				emptyList()
+			),
 		)
 	}
 }

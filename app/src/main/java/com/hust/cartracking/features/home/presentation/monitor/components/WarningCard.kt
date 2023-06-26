@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.dp
 import com.hust.cartracking.core.ui.theme.header_bg
 import com.hust.cartracking.core.ui.theme.warning_level1
 import com.hust.cartracking.core.ui.theme.warning_level2
+import com.hust.cartracking.core.ui.theme.warning_level4
 import com.hust.cartracking.core.util.extensions.Border
 import com.hust.cartracking.core.util.extensions.border
 import com.hust.cartracking.core.util.extensions.convertTime
 import com.hust.cartracking.features.home.domain.model.Warning
-import com.hust.cartracking.features.home.presentation.monitor_search.components.mapTextColor
 
 /********************
  * @Author: Tiiee
@@ -112,7 +112,7 @@ fun WarningCard(
 			modifier = Modifier
 				.weight(2f)
 				.fillMaxHeight()
-				.background(MapWarningColor(warning.warningLevel))
+				.background(mapWarningColor(warning.warningLevel))
 				.border(
 					1.dp, Color.LightGray
 				)
@@ -225,10 +225,11 @@ fun WarningHeaderCard() {
 	}
 }
 
-fun MapWarningColor(level: Int): Color {
+fun mapWarningColor(level: Int): Color {
 	return when (level) {
 		1 -> warning_level1
 		2 -> warning_level2
-		else -> Color.White
+		4 -> warning_level4
+		else -> Color.Gray
 	}
 }

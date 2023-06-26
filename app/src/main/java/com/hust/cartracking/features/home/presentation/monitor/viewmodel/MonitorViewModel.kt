@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.hust.cartracking.core.util.Resource
 import com.hust.cartracking.core.util.UiEvent
 import com.hust.cartracking.core.util.UiText
+import com.hust.cartracking.core.util.extensions.TimeFormat
+import com.hust.cartracking.core.util.extensions.format
 import com.hust.cartracking.core.util.extensions.today
 import com.hust.cartracking.features.home.domain.usecase.GetAllCarOnline
 import com.hust.cartracking.features.home.domain.usecase.GetAllWarning
@@ -18,7 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.Date
+import java.util.Calendar
 import javax.inject.Inject
 
 /********************
@@ -49,7 +51,7 @@ class MonitorViewModel @Inject constructor(
 			while (isActive) {
 				onGetAllCarOnline()
 				onGetAllWarning()
-				delay(120000) // 60s
+				delay(240000) // 60s
 			}
 		}
 	}
@@ -67,7 +69,10 @@ class MonitorViewModel @Inject constructor(
 	}
 	
 	private fun onGetAllWarning(today: String? = null, unitId: Int? = null) {
-		getAllWarning(today ?: Date().today(), unitId ?: -1).onEach {
+		getAllWarning(
+			today ?: Calendar.getInstance().today.format(TimeFormat.YMD),
+			unitId ?: -1
+		).onEach {
 			when (it) {
 				is Resource.Loading -> {
 					_state.value = _state.value.copy(isLoading = true)

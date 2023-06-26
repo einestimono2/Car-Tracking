@@ -12,13 +12,13 @@ import com.hust.cartracking.features.home.domain.usecase.GetLstUpcomingSchedule
 import com.hust.cartracking.features.home.domain.usecase.GetPointShortDataByGroup
 import com.hust.cartracking.features.home.domain.usecase.GetVehicleGroupByUser
 import com.hust.cartracking.features.home.domain.usecase.MonitorUC
+import com.hust.cartracking.features.index.domain.usecase.GetMonitorIndex
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import timber.log.Timber
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -38,15 +38,17 @@ object HomeModule {
 	fun provideMonitorOkHttpClient(
 		okHttpClientBuilder: OkHttpClient.Builder,
 		appCacheManager: AppCache,
+		getMonitorIndex: GetMonitorIndex,
 	): OkHttpClient {
 		return okHttpClientBuilder
 			.addInterceptor {
-				Timber.v("Thêm header với HomeModule")
-				val accessToken = appCacheManager.readValue(Constants.ACCESS_TOKEN_KEY)
+				val index = getMonitorIndex().data!!
+				val accessToken = appCacheManager.readValue(Constants.ACCESS_TOKEN_VALUE_KEY)
+				
 				val modifiedRequest = it.request().newBuilder()
 					.header(
 						"Cookie",
-						".AspNetCore.Antiforgery.dNc7gmZvK2I=${Constants.MONITOR_INDEX_VALUE};x-access-token=${Constants.ASSESS_TOKEN_VALUE}"
+						".AspNetCore.Antiforgery.dNc7gmZvK2I=$index;x-access-token=$accessToken"
 					)
 					.build()
 				it.proceed(modifiedRequest)

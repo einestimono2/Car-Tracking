@@ -128,26 +128,28 @@ fun MonitorScreen(
 				)
 			}
 			
-			WarningHeaderCard()
-			
-			LazyColumn(
-				Modifier.fillMaxWidth(),
-				horizontalAlignment = Alignment.CenterHorizontally
-			) {
-				items(state.warnings) {
-					WarningCard(warning = it) {
-						scope.launch {
-							scaffoldState.bottomSheetState.partialExpand()
-							
-							cameraPositionState.position = CameraPosition.fromLatLngZoom(
-								LatLng(it.endLatitude, it.endLongitude), 16f
-							)
+			if (state.warnings.isNotEmpty()){
+				WarningHeaderCard()
+				
+				LazyColumn(
+					Modifier.fillMaxWidth(),
+					horizontalAlignment = Alignment.CenterHorizontally
+				) {
+					items(state.warnings) {
+						WarningCard(warning = it) {
+							scope.launch {
+								scaffoldState.bottomSheetState.partialExpand()
+								
+								cameraPositionState.position = CameraPosition.fromLatLngZoom(
+									LatLng(it.endLatitude, it.endLongitude), 16f
+								)
+							}
 						}
 					}
 				}
+				
+				Spacer(modifier = Modifier.height(18.dp))
 			}
-			
-			Spacer(modifier = Modifier.height(18.dp))
 		}
 	) {
 		Box(

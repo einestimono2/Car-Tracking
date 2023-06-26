@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -26,11 +27,15 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.hust.cartracking.R
-import com.hust.cartracking.core.ui.navigation.Screens
 import com.hust.cartracking.core.ui.navigation.go
+import com.hust.cartracking.core.util.UiEvent
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(
+	navController: NavHostController,
+	viewModel: SplashViewModel = hiltViewModel()
+) {
 	val logoComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.car_tracking))
 	val loadingComposition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading))
 	
@@ -54,8 +59,19 @@ fun SplashScreen(navController: NavHostController) {
 	
 	LaunchedEffect(key1 = progress) {
 		if (progress >= 1f) {
-			//! Go to Login
-			navController.go(Screens.LoginScreen.route)
+			viewModel.onAuthenticate()
+		}
+	}
+	
+	LaunchedEffect(key1 = true) {
+		viewModel.eventFlow.collectLatest { event ->
+			when (event) {
+				is UiEvent.Navigate -> {
+					navController.go(event.route)
+				}
+				
+				else -> Unit
+			}
 		}
 	}
 	

@@ -11,6 +11,7 @@ val car_parking = Color(0xFFDA2128)
 
 val warning_level1 = Color(0xFFEA9800)
 val warning_level2 = Color(0xFFDA2128)
+val warning_level4 = Color(0xFF008FD5)
 
 //val md_theme_light_primary = Color(0xFFBF0031)
 //val md_theme_light_onPrimary = Color(0xFFFFFFFF)

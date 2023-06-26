@@ -6,5 +6,5 @@ import javax.inject.Inject
 class Authenticate @Inject constructor(
 	private val repository: AuthRepository
 ) {
-	suspend operator fun invoke() = repository.authenticate()
+	operator fun invoke() = repository.authenticate()
 }

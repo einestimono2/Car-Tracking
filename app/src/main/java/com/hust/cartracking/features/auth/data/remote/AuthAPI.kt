@@ -13,7 +13,4 @@ interface AuthAPI {
 		@Body request: LoginRequest
 	): BaseResponse<Any>
 	
-	@GET("/api/user/authenticate")
-	suspend fun authenticate()
-	
 }

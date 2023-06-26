@@ -17,4 +17,11 @@ interface AppCache {
 		key: String,
 	): String?
 	
+	fun removeValue(
+		key: String
+	)
+
+	fun clearAll()
+	
+	fun clearAllIndex()
 }

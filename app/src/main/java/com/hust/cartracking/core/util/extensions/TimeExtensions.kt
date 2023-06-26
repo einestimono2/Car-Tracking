@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 /********************
@@ -14,6 +15,7 @@ import java.util.Date
 
 enum class TimeFormat {
 	DEFAULT,
+	YMD_HMS,
 	YMD,
 }
 
@@ -24,12 +26,7 @@ fun String.convertTime(type: TimeFormat = TimeFormat.DEFAULT): String {
 	return try {
 		val d = sdf.parse(this)
 		
-		sdf.applyPattern(
-			when (type) {
-				TimeFormat.YMD -> "yyyy-MM-dd"
-				else -> "HH:mm:ss, dd/MM/yyyy"
-			}
-		)
+		sdf.applyPattern(mapPattern(type))
 		
 		sdf.format(d!!)
 	} catch (e: ParseException) {
@@ -41,21 +38,42 @@ fun String.convertTime(type: TimeFormat = TimeFormat.DEFAULT): String {
 }
 
 @SuppressLint("SimpleDateFormat")
-fun Date.today(type: TimeFormat = TimeFormat.YMD): String {
+fun Date.format(type: TimeFormat = TimeFormat.DEFAULT): String {
 	val sdf = SimpleDateFormat("yyyyMMdd hhmmss")
 	
 	return try {
-		sdf.applyPattern(
-			when (type) {
-				TimeFormat.YMD -> "yyyy-MM-dd"
-				else -> "HH:mm:ss, dd/MM/yyyy"
-			}
-		)
+		sdf.applyPattern(mapPattern(type))
 		
 		sdf.format(this)
 	} catch (e: ParseException) {
 		Timber.v("Exception", e.localizedMessage)
 		
 		this.toString()
+	}
+}
+
+val Calendar.today: Date
+	get() {
+		return this.time
+	}
+
+val Calendar.tomorrow: Date
+	get() {
+		this.add(Calendar.DAY_OF_YEAR, 1)
+		return this.time
+	}
+
+val Calendar.tokenExpired: Date
+	get() {
+		this.add(Calendar.DAY_OF_YEAR, 1)
+		this.add(Calendar.MINUTE, -30)
+		return this.time
+	}
+
+fun mapPattern(type: TimeFormat): String {
+	return when (type) {
+		TimeFormat.YMD -> "yyyy-MM-dd"
+		TimeFormat.YMD_HMS -> "dd/MM/yyyy, HH:mm:ss"
+		else -> "HH:mm:ss, dd/MM/yyyy"
 	}
 }
