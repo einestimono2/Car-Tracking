@@ -1,6 +1,6 @@
 package com.hust.cartracking.features.home.presentation.monitor.viewmodel
 
-import com.hust.cartracking.features.home.domain.model.CarOnline
+import com.google.android.gms.location.FusedLocationProviderClient
 
 /********************
  * @Author: Tiiee
@@ -15,5 +15,9 @@ sealed class MonitorEvents {
 	data class GetAllWarning(
 		val today: String? = null,
 		val unitId: Int? = null,
+	) : MonitorEvents()
+	
+	data class GetDeviceLocation(
+		val fusedLocationProviderClient: FusedLocationProviderClient
 	) : MonitorEvents()
 }

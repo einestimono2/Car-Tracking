@@ -48,18 +48,6 @@ android {
         }
 
         // Config
-        dev {
-            applicationIdSuffix ".debug"
-            debuggable = true
-            minifyEnabled false
-
-            buildConfigField "String", "BASE_URL", properties.getProperty("BASE_URL")
-            buildConfigField "String", "EMAIL", properties.getProperty("EMAIL_DEV")
-            buildConfigField "String", "PASSWORD", properties.getProperty("PASSWORD_DEV")
-            signingConfig signingConfigs.release
-        }
-
-        // Config
         debug {
             applicationIdSuffix ".debug"
 

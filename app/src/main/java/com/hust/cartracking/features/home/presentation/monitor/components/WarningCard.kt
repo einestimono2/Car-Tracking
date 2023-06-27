@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.hust.cartracking.core.ui.theme.header_bg
 import com.hust.cartracking.core.ui.theme.warning_level1
 import com.hust.cartracking.core.ui.theme.warning_level2
+import com.hust.cartracking.core.ui.theme.warning_level3
 import com.hust.cartracking.core.ui.theme.warning_level4
 import com.hust.cartracking.core.util.extensions.Border
 import com.hust.cartracking.core.util.extensions.border
@@ -229,6 +230,7 @@ fun mapWarningColor(level: Int): Color {
 	return when (level) {
 		1 -> warning_level1
 		2 -> warning_level2
+		3 -> warning_level3
 		4 -> warning_level4
 		else -> Color.Gray
 	}

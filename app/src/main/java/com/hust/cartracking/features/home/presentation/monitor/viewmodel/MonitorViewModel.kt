@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.hust.cartracking.core.util.Resource
 import com.hust.cartracking.core.util.UiEvent
 import com.hust.cartracking.core.util.UiText
@@ -64,6 +65,10 @@ class MonitorViewModel @Inject constructor(
 			
 			is MonitorEvents.GetAllCarOnline -> {
 				onGetAllCarOnline()
+			}
+			
+			is MonitorEvents.GetDeviceLocation -> {
+				onGetDeviceLocation(event.fusedLocationProviderClient)
 			}
 		}
 	}
@@ -130,4 +135,24 @@ class MonitorViewModel @Inject constructor(
 		}.launchIn(viewModelScope)
 	}
 	
+	private fun onGetDeviceLocation(
+		fusedLocationProviderClient: FusedLocationProviderClient
+	) {
+		/*
+		 * Get the best and most recent location of the device, which may be null in rare
+		 * cases when a location is not available.
+		 */
+		try {
+			val locationResult = fusedLocationProviderClient.lastLocation
+			locationResult.addOnCompleteListener { task ->
+				if (task.isSuccessful) {
+					_state.value = _state.value.copy(
+						lastKnownLocation = task.result,
+					)
+				}
+			}
+		} catch (e: SecurityException) {
+			// Show error or something
+		}
+	}
 }

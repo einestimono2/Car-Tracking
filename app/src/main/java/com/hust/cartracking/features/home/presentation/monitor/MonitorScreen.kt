@@ -1,5 +1,9 @@
 package com.hust.cartracking.features.home.presentation.monitor
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.MarqueeSpacing
 import androidx.compose.foundation.basicMarquee
@@ -30,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -50,9 +56,11 @@ import com.hust.cartracking.features.home.domain.model.shortDescription
 import com.hust.cartracking.features.home.presentation.monitor.components.CustomMarkerInfoWindow
 import com.hust.cartracking.features.home.presentation.monitor.components.WarningCard
 import com.hust.cartracking.features.home.presentation.monitor.components.WarningHeaderCard
+import com.hust.cartracking.features.home.presentation.monitor.viewmodel.MonitorEvents
 import com.hust.cartracking.features.home.presentation.monitor.viewmodel.MonitorViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -64,6 +72,31 @@ fun MonitorScreen(
 ) {
 	val state = viewModel.state.value
 	val context = LocalContext.current
+	
+	val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+	
+	val requestPermissionLauncher = rememberLauncherForActivityResult(
+		ActivityResultContracts.RequestPermission()
+	) { isGranted: Boolean ->
+		if (isGranted) {
+			viewModel.onTriggerEvent(MonitorEvents.GetDeviceLocation(fusedLocationProviderClient))
+		}
+	}
+	
+	// Permission
+	LaunchedEffect(key1 = true) {
+		when (PackageManager.PERMISSION_GRANTED) {
+			ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) -> {
+				Timber.v("Permission granted")
+				viewModel.onTriggerEvent(MonitorEvents.GetDeviceLocation(fusedLocationProviderClient))
+			}
+			
+			else -> {
+				Timber.v("Request permission")
+				requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
+			}
+		}
+	}
 	
 	LaunchedEffect(key1 = true) {
 		appBar(AppBarState(title = "Giám sát", actions = {
@@ -97,7 +130,7 @@ fun MonitorScreen(
 	
 	val mapProperties = MapProperties(
 		// Only enable if user has accepted location permissions.
-		isMyLocationEnabled = false//state.lastKnownLocation != null,
+		isMyLocationEnabled = state.lastKnownLocation != null,
 	)
 	
 	// Khởi tạo vị trí ban đầu
@@ -128,7 +161,7 @@ fun MonitorScreen(
 				)
 			}
 			
-			if (state.warnings.isNotEmpty()){
+			if (state.warnings.isNotEmpty()) {
 				WarningHeaderCard()
 				
 				LazyColumn(

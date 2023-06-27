@@ -1,5 +1,6 @@
 package com.hust.cartracking.features.home.presentation.monitor.viewmodel
 
+import android.location.Location
 import com.hust.cartracking.features.home.domain.model.CarOnline
 import com.hust.cartracking.features.home.domain.model.Warning
 
@@ -10,6 +11,7 @@ import com.hust.cartracking.features.home.domain.model.Warning
  ********************/
 
 data class MonitorState(
+	val lastKnownLocation: Location? = null,
 	val isLoading: Boolean = false,
 	val cars: List<CarOnline> = emptyList(),
 	val warnings: List<Warning> = emptyList(),
