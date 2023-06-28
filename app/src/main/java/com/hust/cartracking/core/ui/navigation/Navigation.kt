@@ -15,10 +15,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import coil.ImageLoader
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.google.android.gms.maps.model.LatLng
 import com.hust.cartracking.core.components.AppBarState
 import com.hust.cartracking.core.util.Constants
 import com.hust.cartracking.features.EmptyScreen
@@ -35,7 +33,6 @@ fun Navigation(
 	snackbarHostState: SnackbarHostState,
 	navController: NavHostController,
 	appBar: (AppBarState) -> Unit,
-	imageLoader: ImageLoader,
 ) {
 	AnimatedNavHost(
 		modifier = modifier,
@@ -47,7 +44,11 @@ fun Navigation(
 			SplashScreen(navController = navController)
 		}
 		slideTransitionComposable(route = Screens.LoginScreen.route) {
-			LoginScreen(navController = navController, snackbarHostState = snackbarHostState)
+			LoginScreen(
+				appBar = appBar,
+				navController = navController,
+				snackbarHostState = snackbarHostState
+			)
 		}
 		
 		// Home

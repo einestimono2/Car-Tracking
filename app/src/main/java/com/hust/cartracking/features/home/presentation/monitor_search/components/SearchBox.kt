@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
  * @Time: 2:33 PM
  ********************/
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBox(
 	title: String,

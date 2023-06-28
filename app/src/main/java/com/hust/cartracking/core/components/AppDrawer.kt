@@ -1,7 +1,5 @@
 package com.hust.cartracking.core.components
 
-import android.content.res.Configuration
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -29,14 +27,11 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,12 +44,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.hust.cartracking.R
+import com.hust.cartracking.core.data.local.AppCache
+import com.hust.cartracking.core.ui.navigation.Screens
 import com.hust.cartracking.core.ui.navigation.go
 import com.hust.cartracking.core.util.MenuDrawerItem
 import com.hust.cartracking.core.util.extensions.widthRatio
@@ -67,11 +62,11 @@ import timber.log.Timber
  * @Time: 5:48 PM
  ********************/
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
 	navController: NavHostController,
 	drawerState: DrawerState,
+	appCache: AppCache,
 	content: @Composable () -> Unit,
 ) {
 	val currentRoute =
@@ -98,11 +93,17 @@ fun AppDrawer(
 							.height(0.75.dp)
 							.background(Color.Gray),
 					)
-					DrawerContent(MenuDrawerItem.items, currentRoute, navController, drawerState)
+					DrawerContent(
+						MenuDrawerItem.items,
+						currentRoute,
+						navController,
+						drawerState,
+						appCache
+					)
 				}
 			}
-		})
-	
+		}
+	)
 }
 
 @Composable
@@ -129,13 +130,13 @@ fun DrawerHeader() {
 	
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
 	items: List<MenuDrawerItem>,
 	currentRoute: String?,
 	navController: NavHostController,
 	drawerState: DrawerState,
+	appCache: AppCache,
 ) {
 	LazyColumn(
 		modifier = Modifier
@@ -145,18 +146,18 @@ fun DrawerContent(
 		contentPadding = PaddingValues(horizontal = 8.dp),
 	) {
 		items(items) { item ->
-			DrawerItemWrapper(item, currentRoute, navController, drawerState)
+			DrawerItemWrapper(item, currentRoute, navController, drawerState, appCache)
 		}
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerItemWrapper(
 	item: MenuDrawerItem,
 	currentRoute: String?,
 	navController: NavHostController,
 	drawerState: DrawerState,
+	appCache: AppCache,
 ) {
 	val hasChildren = item.children.isNotEmpty()
 	val initExpanded = item.children.any { it.route == currentRoute }
@@ -166,8 +167,15 @@ fun DrawerItemWrapper(
 	
 	val onClick = {
 		if (hasChildren) expanded = !expanded
+		else if(item.route == Screens.LoginScreen.route){
+			scope.launch { drawerState.close() }
+			
+			appCache.clearAllIndex()
+			navController.go(item.route)
+		}
 		else if (item.route != currentRoute) {
 			scope.launch { drawerState.close() }
+			
 			navController.go(item.route)
 		}
 	}
@@ -269,17 +277,5 @@ fun DrawerItemChild(item: MenuDrawerItem, isSelected: Boolean, onClick: () -> Un
 			color = if (isSelected) Color.Red else Color.Black,
 			style = MaterialTheme.typography.titleSmall
 		)
-	}
-}
-
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
-@Preview(
-	showBackground = true, backgroundColor = 256 * 256 * 256, // R * G * B
-	showSystemUi = true, name = "Drawer Screen", uiMode = Configuration.UI_MODE_TYPE_NORMAL
-)
-@Composable
-fun AppDrawerPreview() {
-	AppDrawer(rememberAnimatedNavController(), rememberDrawerState(DrawerValue.Closed)) {
-		Column() {}
 	}
 }

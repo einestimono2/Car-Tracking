@@ -1,12 +1,9 @@
 package com.hust.cartracking.di
 
 import android.app.Application
-import coil.ImageLoader
-import coil.decode.SvgDecoder
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.hust.cartracking.BuildConfig
-import com.hust.cartracking.R
 import com.hust.cartracking.core.data.local.AppCache
 import com.hust.cartracking.core.data.local.AppCacheManager
 import dagger.Module
@@ -57,19 +54,6 @@ object AppModule {
 		return Retrofit.Builder()
 			.baseUrl(BuildConfig.BASE_URL)
 			.addConverterFactory(GsonConverterFactory.create(gsonBuilder))
-	}
-	
-	@Provides
-	@Singleton
-	fun provideImageLoader(app: Application): ImageLoader {
-		return ImageLoader.Builder(app)
-			.crossfade(true)
-			.placeholder(R.drawable.placeholder)
-			.error(R.drawable.img_error)
-			.components {
-				add(SvgDecoder.Factory())
-			}
-			.build()
 	}
 	
 	@Provides

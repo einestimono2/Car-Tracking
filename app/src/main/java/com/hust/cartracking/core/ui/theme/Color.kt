@@ -14,6 +14,8 @@ val warning_level2 = Color(0xFFDA2128)
 val warning_level3 = Color(0xFF6F001A)
 val warning_level4 = Color(0xFF008FD5)
 
+val darkGray = Color(0xFF444444)
+
 //val md_theme_light_primary = Color(0xFFBF0031)
 //val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 //val md_theme_light_primaryContainer = Color(0xFFFFDAD9)

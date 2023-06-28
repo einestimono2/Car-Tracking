@@ -13,4 +13,6 @@ data class MonitorUC(
 	val getLstRunningSchedule: GetLstRunningSchedule,
 	val getLstUpcomingSchedule: GetLstUpcomingSchedule,
 	val getPointShortDataByGroup: GetPointShortDataByGroup,
+	val getCarInfo: GetCarInfo,
+	val getCarImage: GetCarImage,
 )

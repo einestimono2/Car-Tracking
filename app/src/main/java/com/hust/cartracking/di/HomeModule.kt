@@ -7,6 +7,8 @@ import com.hust.cartracking.features.home.data.repository.MonitorRepositoryImpl
 import com.hust.cartracking.features.home.domain.repository.MonitorRepository
 import com.hust.cartracking.features.home.domain.usecase.GetAllCarOnline
 import com.hust.cartracking.features.home.domain.usecase.GetAllWarning
+import com.hust.cartracking.features.home.domain.usecase.GetCarImage
+import com.hust.cartracking.features.home.domain.usecase.GetCarInfo
 import com.hust.cartracking.features.home.domain.usecase.GetLstRunningSchedule
 import com.hust.cartracking.features.home.domain.usecase.GetLstUpcomingSchedule
 import com.hust.cartracking.features.home.domain.usecase.GetPointShortDataByGroup
@@ -86,6 +88,8 @@ object HomeModule {
 			getLstRunningSchedule = GetLstRunningSchedule(repository),
 			getLstUpcomingSchedule = GetLstUpcomingSchedule(repository),
 			getPointShortDataByGroup = GetPointShortDataByGroup(repository),
+			getCarInfo = GetCarInfo(repository),
+			getCarImage = GetCarImage(repository),
 		)
 	}
 }

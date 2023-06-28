@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.hust.cartracking.core.components.AppBarState
 import com.hust.cartracking.core.components.Loading
 import com.hust.cartracking.core.ui.navigation.go
 import com.hust.cartracking.core.util.UiEvent
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
+	appBar: (AppBarState) -> Unit,
 	navController: NavHostController,
 	snackbarHostState: SnackbarHostState,
 	viewModel: LoginViewModel = hiltViewModel(),
@@ -37,6 +39,8 @@ fun LoginScreen(
 	val currentFocus = LocalFocusManager.current
 	
 	LaunchedEffect(true) {
+		appBar(AppBarState(title = ""))
+		
 		viewModel.eventFlow.collectLatest { event ->
 			when (event) {
 				is UiEvent.ShowSnackbar -> {

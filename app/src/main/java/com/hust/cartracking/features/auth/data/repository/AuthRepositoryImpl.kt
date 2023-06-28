@@ -2,8 +2,8 @@ package com.hust.cartracking.features.auth.data.repository
 
 import com.google.gson.internal.LinkedTreeMap
 import com.hust.cartracking.core.data.local.AppCache
-import com.hust.cartracking.core.util.Constants
 import com.hust.cartracking.core.util.Constants.ACCESS_TOKEN_EXPIRED_KEY
+import com.hust.cartracking.core.util.Constants.ACCESS_TOKEN_VALUE_KEY
 import com.hust.cartracking.core.util.Resource
 import com.hust.cartracking.core.util.UiText
 import com.hust.cartracking.core.util.UnitResource
@@ -55,10 +55,11 @@ class AuthRepositoryImpl @Inject constructor(
 			val authDTO = AuthDTO(data["accessToken"].toString(), data["scope"].toString())
 			
 			// Save access token and expired of token (1d - 30m)
-			appCacheManager.setValue(Constants.ACCESS_TOKEN_VALUE_KEY, authDTO.accessToken)
+			appCacheManager.setValue(ACCESS_TOKEN_VALUE_KEY, authDTO.accessToken)
 			
 			val expired = Calendar.getInstance().tokenExpired.format(TimeFormat.YMD_HMS)
 			Timber.v("Expired: $expired")
+			Timber.v("Token: ${authDTO.accessToken}")
 			appCacheManager.setValue(ACCESS_TOKEN_EXPIRED_KEY, expired)
 			
 			emit(Resource.Success(Unit))
@@ -75,6 +76,7 @@ class AuthRepositoryImpl @Inject constructor(
 		
 		Timber.v("Now: $now")
 		Timber.v("Expired: $expired")
+		Timber.v("Token: ${appCacheManager.readValue(ACCESS_TOKEN_VALUE_KEY)}")
 		
 		if (expired == null || now >= expired) {
 			Timber.v("Phiên đăng nhập đã hết hạn!")

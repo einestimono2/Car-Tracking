@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,8 +32,10 @@ import com.hust.cartracking.core.ui.theme.car_stopping
 import com.hust.cartracking.core.ui.theme.header_bg
 import com.hust.cartracking.core.util.extensions.Border
 import com.hust.cartracking.core.util.extensions.border
-import com.hust.cartracking.core.util.extensions.roundTo2DecimalPlaces
+import com.hust.cartracking.core.util.mapBackgroundStateColor
+import com.hust.cartracking.core.util.mapTextStateColor
 import com.hust.cartracking.features.home.domain.model.CarOnline
+import com.hust.cartracking.features.home.presentation.car_info.CarInfoDialog
 
 /********************
  * @Author: Tiiee
@@ -98,7 +104,7 @@ fun CarCardHeader(
 			Box(
 				contentAlignment = Alignment.Center,
 				modifier = Modifier
-					.weight(2f)
+					.weight(1f)
 					.fillMaxHeight()
 			) {
 				Text(
@@ -116,6 +122,7 @@ fun CarCard(
 	id: String,
 	car: CarOnline,
 	onClick: () -> Unit,
+	onImageClick: () -> Unit,
 ) {
 	
 	Row(modifier = Modifier.height(IntrinsicSize.Min)) {
@@ -138,7 +145,7 @@ fun CarCard(
 			contentAlignment = Alignment.Center,
 			modifier = Modifier
 				.weight(6f)
-				.background(mapBackgroundColor(car.stateName))
+				.background(mapBackgroundStateColor(car.stateName))
 				.border(
 					1.dp, Color.LightGray
 				)
@@ -151,7 +158,7 @@ fun CarCard(
 					.padding(vertical = 8.dp),
 				textAlign = TextAlign.Center,
 				style = MaterialTheme.typography.titleMedium.copy(
-					color = mapTextColor(car.stateName)
+					color = mapTextStateColor(car.stateName)
 				)
 			)
 		}
@@ -159,32 +166,23 @@ fun CarCard(
 		Box(
 			contentAlignment = Alignment.Center,
 			modifier = Modifier
-				.weight(2f)
+				.weight(1f)
 				.fillMaxHeight()
 				.border(
 					1.dp, Color.LightGray
 				)
 		) {
-			Text(
-				"${car.stateName}",
-				textAlign = TextAlign.Center
+			Icon(
+				Icons.Default.Image,
+				"",
+				Modifier
+					.fillMaxSize()
+					.padding(3.dp)
+					.clickable {
+						onImageClick()
+					},
+				Color.Gray
 			)
 		}
-	}
-}
-
-fun mapBackgroundColor(stateName: String): Color {
-	return when (stateName) {
-		"RUNNING" -> car_running
-		"SOS" -> car_sos
-		"PARKING" -> car_parking
-		else -> car_stopping
-	}
-}
-
-fun mapTextColor(stateName: String): Color {
-	return when (stateName) {
-		"PARKING" -> Color(0xFFFFFF00)
-		else -> Color.White
 	}
 }

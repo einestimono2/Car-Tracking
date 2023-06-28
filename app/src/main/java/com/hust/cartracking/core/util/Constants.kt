@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.LensBlur
 import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Memory
@@ -244,6 +245,13 @@ data class MenuDrawerItem(
 				"Đổi mật khẩu",
 				Icons.Default.Key,
 				Screens.PasswordScreen.route,
+				emptyList()
+			),
+			
+			MenuDrawerItem(
+				"Đăng xuất",
+				Icons.Default.Logout,
+				Screens.LoginScreen.route,
 				emptyList()
 			),
 		)

@@ -1,6 +1,7 @@
 package com.hust.cartracking.features.home.data.remote
 
-import com.hust.cartracking.core.data.network.BaseResponse
+import com.hust.cartracking.features.home.data.remote.response.CarImgDTO
+import com.hust.cartracking.features.home.data.remote.response.CarInfoDTO
 import com.hust.cartracking.features.home.data.remote.response.CarOnlineDTO
 import com.hust.cartracking.features.home.data.remote.response.VehicleGroupByUserDTO
 import com.hust.cartracking.features.home.data.remote.response.WarningDTO
@@ -43,4 +44,18 @@ interface MonitorAPI {
 		@Query("unitId") unitId: Int,
 	): List<VehicleGroupByUserDTO>
 	
+	@GET("/Vehicle/GetCarInfoById")
+	suspend fun getCarInfo(
+		@Query("carId") carId: Int,
+	): CarInfoDTO
+	
+	@GET("/Vehicle/GetLstCarImgByTime")
+	suspend fun getLstCarImgByTime(
+		@Query("carId") carId: Int,
+		@Query("fromTime", encoded=true) fromTime: String, // encoded = true --> thay thế %25 bằng % khi truyền % vào string
+		@Query("toTime", encoded=true) toTime: String,
+	): List<CarImgDTO>
+	
+	// /GetCarInfoById?carId=78
+	// /GetLstCarImgByTime?carId=78&fromTime=2023-6-27%200%3A0&toTime=2023-6-27%2023%3A59
 }

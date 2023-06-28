@@ -32,7 +32,10 @@ import com.hust.cartracking.core.util.extensions.border
 import com.hust.cartracking.core.util.extensions.convertTime
 import com.hust.cartracking.core.util.extensions.roundTo2DecimalPlaces
 import com.hust.cartracking.core.util.extensions.widthRatio
+import com.hust.cartracking.core.util.mapCarStatus
+import com.hust.cartracking.core.util.mapCarType
 import com.hust.cartracking.features.home.domain.model.CarOnline
+import timber.log.Timber
 import java.util.Locale
 
 /********************
@@ -65,6 +68,7 @@ fun CustomMarkerInfoWindow(car: CarOnline, context: Context) {
 			)
 			
 			geo.getFromLocation(car.gpsLat, car.gpsLon, 1)?.get(0)?.let {
+				Timber.v(it.toString())
 				Cell(
 					"Địa chỉ",
 					it.getAddressLine(0)
@@ -77,7 +81,7 @@ fun CustomMarkerInfoWindow(car: CarOnline, context: Context) {
 			)
 			Cell(
 				"Loại xe",
-				convertCarType(car.carType)
+				mapCarType(car.carType)
 			)
 			Cell(
 				"Biển số xe",
@@ -89,7 +93,7 @@ fun CustomMarkerInfoWindow(car: CarOnline, context: Context) {
 			)
 			Cell(
 				"Trạng thái",
-				"${convertStatus(car.stateName)} (${car.deviceTime.convertTime(TimeFormat.DEFAULT)})"
+				"${mapCarStatus(car.stateName)} (${car.deviceTime.convertTime(TimeFormat.DEFAULT)})"
 			)
 			Cell(
 				"Vận tốc",
@@ -106,22 +110,6 @@ fun CustomMarkerInfoWindow(car: CarOnline, context: Context) {
 			)
 			
 		}
-	}
-}
-
-fun convertStatus(type: String): String {
-	return when (type) {
-		"SOS" -> "BÁO ĐỘNG"
-		"PARKING" -> "ĐỖ"
-		else -> "CHẠY"
-	}
-}
-
-fun convertCarType(type: Int?): String {
-	return when (type) {
-		1 -> "Chở tiền"
-		2 -> "Dùng chung (không camera)"
-		else -> "Không xác định"
 	}
 }
 

@@ -29,6 +29,7 @@ import com.hust.cartracking.core.ui.theme.warning_level4
 import com.hust.cartracking.core.util.extensions.Border
 import com.hust.cartracking.core.util.extensions.border
 import com.hust.cartracking.core.util.extensions.convertTime
+import com.hust.cartracking.core.util.mapWarningColor
 import com.hust.cartracking.features.home.domain.model.Warning
 
 /********************
@@ -223,15 +224,5 @@ fun WarningHeaderCard() {
 				)
 			}
 		}
-	}
-}
-
-fun mapWarningColor(level: Int): Color {
-	return when (level) {
-		1 -> warning_level1
-		2 -> warning_level2
-		3 -> warning_level3
-		4 -> warning_level4
-		else -> Color.Gray
 	}
 }

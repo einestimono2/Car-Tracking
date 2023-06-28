@@ -1,6 +1,8 @@
 package com.hust.cartracking.features.home.domain.repository
 
 import com.hust.cartracking.core.util.Resource
+import com.hust.cartracking.features.home.domain.model.CarImage
+import com.hust.cartracking.features.home.domain.model.CarInfo
 import com.hust.cartracking.features.home.domain.model.CarOnline
 import com.hust.cartracking.features.home.domain.model.PointShortDataByGroup
 import com.hust.cartracking.features.home.domain.model.Schedule
@@ -28,4 +30,7 @@ interface MonitorRepository {
 	
 	fun getPointShortDataByGroup(unitId: Int = -1): Flow<Resource<List<PointShortDataByGroup>>>
 	
+	fun getCarInfo(carId: Int): Flow<Resource<CarInfo>>
+	
+	fun getCarImage(carId: Int, fromTime: String, toTime: String): Flow<Resource<List<CarImage>>>
 }
